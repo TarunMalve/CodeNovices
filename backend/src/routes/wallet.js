@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const { getBalance, getTransactions } = require('../controllers/walletController');
 const authMiddleware = require('../middleware/auth');
 
-router.get('/balance', authMiddleware, getBalance);
-router.get('/transactions', authMiddleware, getTransactions);
+const walletLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+
+router.get('/balance', walletLimiter, authMiddleware, getBalance);
+router.get('/transactions', walletLimiter, authMiddleware, getTransactions);
 
 module.exports = router;
