@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const rateLimit = require('express-rate-limit');
 
 dotenv.config();
 
@@ -38,18 +39,23 @@ app.use('/api/health-score', require('./routes/healthScore'));
 app.use('/api/ai-hub', require('./routes/aiHub'));
 
 // Public stats endpoint (no auth required) for landing page
-app.get('/api/public/stats', (req, res) => {
-  const { getDb } = require('./database/db');
-  const db = getDb();
-  const rows = db.prepare('SELECT key, value FROM analytics_overview').all();
-  const data = {};
-  rows.forEach(r => { data[r.key] = r.value; });
-  res.json({
-    citizensServed: data.totalCitizens || 0,
-    fundsDistributed: data.fundsDistributed || 0,
-    grievancesResolved: data.grievancesResolved || 0,
-    schemesActive: data.schemesActive || 0,
-  });
+const publicLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+app.get('/api/public/stats', publicLimiter, (req, res) => {
+  try {
+    const { getDb } = require('./database/db');
+    const db = getDb();
+    const rows = db.prepare('SELECT key, value FROM analytics_overview').all();
+    const data = {};
+    rows.forEach(r => { data[r.key] = r.value; });
+    res.json({
+      citizensServed: data.totalCitizens || 0,
+      fundsDistributed: data.fundsDistributed || 0,
+      grievancesResolved: data.grievancesResolved || 0,
+      schemesActive: data.schemesActive || 0,
+    });
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
 });
 
 app.get('/', (req, res) => {
