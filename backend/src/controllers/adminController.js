@@ -45,4 +45,61 @@ const getBlockchainData = (req, res) => {
   res.json({ transactions, total: transactions.length });
 };
 
-module.exports = { getAnalytics, getBlockchainData };
+const getHeatmap = (req, res) => {
+  res.json({
+    states: [
+      { state: 'Uttar Pradesh', funds: 85000, beneficiaries: 125000, intensity: 90 },
+      { state: 'Maharashtra', funds: 72000, beneficiaries: 98000, intensity: 78 },
+      { state: 'Bihar', funds: 45000, beneficiaries: 89000, intensity: 65 },
+      { state: 'Rajasthan', funds: 38000, beneficiaries: 56000, intensity: 55 },
+      { state: 'Madhya Pradesh', funds: 42000, beneficiaries: 67000, intensity: 60 },
+      { state: 'Gujarat', funds: 55000, beneficiaries: 72000, intensity: 70 },
+      { state: 'Karnataka', funds: 48000, beneficiaries: 61000, intensity: 63 },
+      { state: 'West Bengal', funds: 35000, beneficiaries: 78000, intensity: 58 },
+      { state: 'Tamil Nadu', funds: 52000, beneficiaries: 68000, intensity: 68 },
+      { state: 'Telangana', funds: 29000, beneficiaries: 42000, intensity: 45 },
+    ]
+  });
+};
+
+const classifyGrievances = (req, res) => {
+  res.json({
+    categories: [
+      { name: 'Financial/DBT', count: 1245, priority: 'High', avgResolution: 3.2 },
+      { name: 'Document Verification', count: 876, priority: 'Medium', avgResolution: 5.1 },
+      { name: 'Scheme Application', count: 654, priority: 'High', avgResolution: 4.8 },
+      { name: 'Technical Issues', count: 432, priority: 'Low', avgResolution: 2.1 },
+      { name: 'Corruption/Fraud', count: 123, priority: 'Critical', avgResolution: 7.5 },
+      { name: 'Infrastructure', count: 345, priority: 'Medium', avgResolution: 8.2 },
+    ],
+    recent: [
+      { id: 'GRV001', title: 'Delayed DBT Payment', citizen: 'Ramesh Kumar', category: 'Financial/DBT', priority: 'High', status: 'Resolved', date: '2024-01-15' },
+      { id: 'GRV002', title: 'Aadhaar Linking Issue', citizen: 'Sunita Devi', category: 'Document Verification', priority: 'Medium', status: 'In Progress', date: '2024-01-14' },
+      { id: 'GRV003', title: 'PM Awas Application Rejected', citizen: 'Mohan Lal', category: 'Scheme Application', priority: 'High', status: 'Open', date: '2024-01-13' },
+      { id: 'GRV004', title: 'Portal Login Error', citizen: 'Priya Sharma', category: 'Technical Issues', priority: 'Low', status: 'Resolved', date: '2024-01-12' },
+    ]
+  });
+};
+
+const getRevenueTrends = (req, res) => {
+  res.json({
+    monthly: [
+      { month: 'Aug 2023', disbursed: 4200, beneficiaries: 12400, schemes: 38 },
+      { month: 'Sep 2023', disbursed: 5800, beneficiaries: 15600, schemes: 40 },
+      { month: 'Oct 2023', disbursed: 4900, beneficiaries: 13200, schemes: 39 },
+      { month: 'Nov 2023', disbursed: 7200, beneficiaries: 18900, schemes: 42 },
+      { month: 'Dec 2023', disbursed: 6800, beneficiaries: 17100, schemes: 41 },
+      { month: 'Jan 2024', disbursed: 9100, beneficiaries: 22300, schemes: 47 },
+    ],
+    schemeDistribution: [
+      { scheme: 'PM Kisan', percentage: 28 },
+      { scheme: 'Ayushman Bharat', percentage: 22 },
+      { scheme: 'PM Awas', percentage: 18 },
+      { scheme: 'MNREGA', percentage: 15 },
+      { scheme: 'Scholarship', percentage: 10 },
+      { scheme: 'Others', percentage: 7 },
+    ],
+  });
+};
+
+module.exports = { getAnalytics, getBlockchainData, getHeatmap, classifyGrievances, getRevenueTrends };

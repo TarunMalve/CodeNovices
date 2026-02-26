@@ -7,14 +7,21 @@ const citizenLinks = [
   { href: '/wallet', label: '💰 Wallet' },
   { href: '/dbt-tracker', label: '📊 DBT Tracker' },
   { href: '/documents', label: '📁 Documents' },
+  { href: '/utilities', label: '⚡ Utilities' },
+  { href: '/eligibility', label: '✅ Eligibility Check' },
+  { href: '/tax-advisor', label: '💼 Tax Advisor' },
+  { href: '/security', label: '🔒 Security' },
   { href: '/aatmanirbhar/schemes', label: '📋 Schemes' },
   { href: '/aatmanirbhar/marketplace', label: '🛒 Marketplace' },
   { href: '/grievance', label: '📢 Grievance' },
+  { href: '/fund-transparency', label: '📈 Fund Transparency' },
+  { href: '/land-verification', label: '🗺️ Land Records' },
 ];
 
 const adminLinks = [
   { href: '/dashboard/admin', label: '📊 Dashboard' },
   { href: '/aatmanirbhar/swadeshi-dashboard', label: '📈 Swadeshi Dashboard' },
+  { href: '/fund-transparency', label: '💰 Fund Transparency' },
   { href: '/grievance', label: '📢 Grievances' },
 ];
 

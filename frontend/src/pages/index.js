@@ -141,6 +141,20 @@ export default function Home() {
               color="border-navy"
               bg="bg-blue-50"
             />
+            <QuickCard
+              title="📈 Fund Transparency"
+              desc="Track ₹50,000 Cr budget allocation with blockchain verification"
+              href="/fund-transparency"
+              color="border-saffron"
+              bg="bg-orange-50"
+            />
+            <QuickCard
+              title="✅ Eligibility Engine"
+              desc="Check your eligibility for 47+ government schemes instantly"
+              href="/eligibility"
+              color="border-india-green"
+              bg="bg-green-50"
+            />
           </div>
         </section>
 
