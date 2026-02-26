@@ -26,7 +26,10 @@ const uploadDocument = (req, res) => {
 
 const listDocuments = (req, res) => {
   const db = getDb();
-  const documents = db.prepare('SELECT * FROM documents ORDER BY uploaded_at DESC').all();
+  const userId = req.user ? req.user.id : null;
+  const documents = userId
+    ? db.prepare('SELECT * FROM documents WHERE user_id = ? ORDER BY uploaded_at DESC').all(userId)
+    : db.prepare('SELECT * FROM documents ORDER BY uploaded_at DESC').all();
   const mapped = documents.map(d => ({
     id: d.id,
     type: d.type,

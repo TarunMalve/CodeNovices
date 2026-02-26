@@ -6,6 +6,7 @@ function seedDatabase() {
 
   const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get();
   if (userCount.count > 0) {
+    console.log('Database already seeded, skipping');
     return;
   }
 

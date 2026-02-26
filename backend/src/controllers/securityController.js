@@ -2,7 +2,10 @@ const { getDb } = require('../database/db');
 
 const getSessions = (req, res) => {
   const db = getDb();
-  const sessions = db.prepare('SELECT * FROM sessions ORDER BY last_active DESC').all();
+  const userId = req.user ? req.user.id : null;
+  const sessions = userId
+    ? db.prepare('SELECT * FROM sessions WHERE user_id = ? ORDER BY last_active DESC').all(userId)
+    : db.prepare('SELECT * FROM sessions ORDER BY last_active DESC').all();
   const mapped = sessions.map(s => ({
     id: s.id,
     device: s.device,

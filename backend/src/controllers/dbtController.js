@@ -2,7 +2,10 @@ const { getDb } = require('../database/db');
 
 const getDBTStatus = (req, res) => {
   const db = getDb();
-  const dbtRows = db.prepare('SELECT * FROM dbt_statuses').all();
+  const userId = req.user ? req.user.id : null;
+  const dbtRows = userId
+    ? db.prepare('SELECT * FROM dbt_statuses WHERE user_id = ?').all(userId)
+    : db.prepare('SELECT * FROM dbt_statuses').all();
   const dbtStatuses = dbtRows.map(dbt => {
     const timeline = db.prepare('SELECT stage, date, completed FROM dbt_timeline WHERE dbt_id = ? ORDER BY id').all(dbt.id);
     return {
