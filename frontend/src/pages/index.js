@@ -32,6 +32,9 @@ export default function Home() {
               <div className="inline-block bg-saffron text-navy text-xs font-bold px-3 py-1 rounded-full mb-4">
                 🇮🇳 Powered by Blockchain Technology
               </div>
+              <div className="inline-block bg-blue-900 text-gray-300 text-xs px-3 py-1 rounded-full mb-4 ml-2">
+                🤖 Powered by AI — Claude Opus · Sonnet · Gemini Flash
+              </div>
               <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
                 <span className="text-saffron">Aatmanirbhar Bharat</span>
                 <br />
@@ -98,20 +101,13 @@ export default function Home() {
         <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
           <h2 className="text-3xl font-bold text-center text-navy mb-4">Our Services</h2>
           <p className="text-center text-gray-500 mb-10">Everything you need for digital governance in one place</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <QuickCard
               title="🏦 DBT Tracker"
               desc="Track your Direct Benefit Transfers with blockchain-verified transparency"
               href="/dbt-tracker"
               color="border-saffron"
               bg="bg-orange-50"
-            />
-            <QuickCard
-              title="🛒 Vocal for Local"
-              desc="Discover and support Made in India MSME products and artisans"
-              href="/aatmanirbhar/marketplace"
-              color="border-india-green"
-              bg="bg-green-50"
             />
             <QuickCard
               title="📋 Government Schemes"
@@ -121,56 +117,42 @@ export default function Home() {
               bg="bg-blue-50"
             />
             <QuickCard
-              title="💰 Fintech Wallet"
-              desc="View your government subsidy wallet and transaction history"
-              href="/wallet"
-              color="border-saffron"
-              bg="bg-orange-50"
-            />
-            <QuickCard
-              title="📁 Document Vault"
-              desc="Store and manage your digital certificates and government documents"
-              href="/documents"
-              color="border-india-green"
-              bg="bg-green-50"
-            />
-            <QuickCard
-              title="📢 File Grievance"
-              desc="Report issues and track the resolution status of your complaints"
-              href="/grievance"
-              color="border-navy"
-              bg="bg-blue-50"
-            />
-            <QuickCard
               title="📈 Fund Transparency"
               desc="Track ₹50,000 Cr budget allocation with blockchain verification"
               href="/fund-transparency"
-              color="border-saffron"
-              bg="bg-orange-50"
+              color="border-india-green"
+              bg="bg-green-50"
             />
             <QuickCard
               title="✅ Eligibility Engine"
               desc="Check your eligibility for 47+ government schemes instantly"
               href="/eligibility"
-              color="border-india-green"
-              bg="bg-green-50"
+              color="border-saffron"
+              bg="bg-orange-50"
             />
           </div>
         </section>
 
-        {/* Aatmanirbhar Bharat Section */}
-        <section className="bg-navy text-white py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4">
-              <span className="text-saffron">Aatmanirbhar Bharat</span> Initiative
-            </h2>
-            <p className="text-gray-300 text-lg mb-10 max-w-2xl mx-auto">
-              Building a self-reliant India through innovation, local manufacturing, and digital empowerment.
-            </p>
+        {/* Security & Compliance */}
+        <section className="bg-white py-12 border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-xl font-bold text-center text-navy mb-6">Security & Compliance</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <InitiativeCard icon="🏭" title="Make in India" desc="Supporting 15,000+ manufacturing units with government backing" />
-              <InitiativeCard icon="🌱" title="Startup India" desc="Fostering 90,000+ DPIIT recognized startups across the nation" />
-              <InitiativeCard icon="🤝" title="Vocal for Local" desc="Empowering 6.3 crore MSMEs with digital marketplace access" />
+              <div className="text-center p-4 rounded-xl bg-green-50 border border-green-100">
+                <div className="text-3xl mb-2">🏦</div>
+                <p className="text-sm font-bold text-navy">RBI Compliant</p>
+                <p className="text-xs text-gray-500 mt-1">Regulated digital payments</p>
+              </div>
+              <div className="text-center p-4 rounded-xl bg-blue-50 border border-blue-100">
+                <div className="text-3xl mb-2">🔒</div>
+                <p className="text-sm font-bold text-navy">ISO 27001 Certified</p>
+                <p className="text-xs text-gray-500 mt-1">Information security management</p>
+              </div>
+              <div className="text-center p-4 rounded-xl bg-orange-50 border border-orange-100">
+                <div className="text-3xl mb-2">🛡️</div>
+                <p className="text-sm font-bold text-navy">PCI DSS Encrypted</p>
+                <p className="text-xs text-gray-500 mt-1">End-to-end data encryption</p>
+              </div>
             </div>
           </div>
         </section>
@@ -188,15 +170,5 @@ function QuickCard({ title, desc, href, color, bg }) {
       <p className="text-gray-600 text-sm">{desc}</p>
       <span className="text-saffron text-sm font-semibold mt-3 inline-block">Learn more →</span>
     </Link>
-  );
-}
-
-function InitiativeCard({ icon, title, desc }) {
-  return (
-    <div className="bg-blue-900 rounded-xl p-6 hover:bg-blue-800 transition-colors">
-      <div className="text-4xl mb-3">{icon}</div>
-      <h3 className="text-lg font-bold text-saffron mb-2">{title}</h3>
-      <p className="text-gray-300 text-sm">{desc}</p>
-    </div>
   );
 }

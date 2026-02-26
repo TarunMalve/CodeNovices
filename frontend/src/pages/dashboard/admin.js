@@ -138,7 +138,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Grievance Management */}
-          <div className="bg-white rounded-xl shadow-md p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 mb-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold text-navy">📢 Grievance Management</h2>
               <div className="flex gap-2">
@@ -178,6 +178,127 @@ export default function AdminDashboard() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Regional Revenue Heatmap */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-lg font-bold text-navy mb-4">🗺️ Regional Revenue Heatmap</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="text-left py-2 px-3 text-gray-600 font-medium">State</th>
+                      <th className="text-left py-2 px-3 text-gray-600 font-medium">Fund (₹Cr)</th>
+                      <th className="text-left py-2 px-3 text-gray-600 font-medium">Distribution</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { state: 'Maharashtra', fund: 8500, pct: 85 },
+                      { state: 'Uttar Pradesh', fund: 7200, pct: 72 },
+                      { state: 'Tamil Nadu', fund: 6100, pct: 61 },
+                      { state: 'Karnataka', fund: 5800, pct: 58 },
+                      { state: 'Gujarat', fund: 5400, pct: 54 },
+                      { state: 'Rajasthan', fund: 4200, pct: 42 },
+                    ].map(row => (
+                      <tr key={row.state} className="border-t border-gray-100">
+                        <td className="py-2 px-3 text-gray-700 font-medium">{row.state}</td>
+                        <td className="py-2 px-3 text-gray-600">₹{row.fund.toLocaleString('en-IN')}</td>
+                        <td className="py-2 px-3">
+                          <div className="w-full bg-gray-100 rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full ${row.pct >= 70 ? 'bg-india-green' : row.pct >= 50 ? 'bg-saffron' : 'bg-red-400'}`}
+                              style={{ width: `${row.pct}%` }}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Public Fund Transparency */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-lg font-bold text-navy mb-4">💰 Public Fund Transparency</h2>
+              <p className="text-sm text-gray-500 mb-4">Total Budget Allocation: <span className="font-bold text-navy">₹50,000 Cr</span></p>
+              <div className="space-y-4">
+                {[
+                  { sector: 'Infrastructure', amount: 18000, pct: 36, color: 'bg-navy' },
+                  { sector: 'Healthcare', amount: 14000, pct: 28, color: 'bg-india-green' },
+                  { sector: 'Education', amount: 12000, pct: 24, color: 'bg-saffron' },
+                  { sector: 'Agriculture', amount: 6000, pct: 12, color: 'bg-blue-400' },
+                ].map(item => (
+                  <div key={item.sector}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-700">{item.sector}</span>
+                      <span className="text-gray-500 font-medium">₹{item.amount.toLocaleString('en-IN')} Cr ({item.pct}%)</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-3">
+                      <div className={`${item.color} h-3 rounded-full transition-all`} style={{ width: `${item.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Scheme Distribution */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-lg font-bold text-navy mb-4">📊 Scheme Distribution</h2>
+              <div className="space-y-3">
+                {[
+                  { scheme: 'PM-KISAN', pct: 35, color: 'bg-india-green' },
+                  { scheme: 'Ayushman Bharat', pct: 25, color: 'bg-navy' },
+                  { scheme: 'PM Mudra Yojana', pct: 20, color: 'bg-saffron' },
+                  { scheme: 'Startup India', pct: 12, color: 'bg-blue-400' },
+                  { scheme: 'Others', pct: 8, color: 'bg-gray-400' },
+                ].map(item => (
+                  <div key={item.scheme}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-700">{item.scheme}</span>
+                      <span className="text-gray-500 font-medium">{item.pct}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2">
+                      <div className={`${item.color} h-2 rounded-full`} style={{ width: `${item.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Mini pie visual */}
+              <div className="flex items-center justify-center mt-4">
+                <div className="w-24 h-24 rounded-full" style={{ background: 'conic-gradient(#138808 0% 35%, #000080 35% 60%, #FF9933 60% 80%, #60a5fa 80% 92%, #9ca3af 92% 100%)' }} />
+              </div>
+            </div>
+
+            {/* Payment Methods */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-lg font-bold text-navy mb-4">💳 Payment Methods Breakdown</h2>
+              <div className="space-y-4">
+                {[
+                  { method: 'UPI', pct: 45, icon: '📱', color: 'bg-india-green' },
+                  { method: 'Net Banking', pct: 28, icon: '🏦', color: 'bg-navy' },
+                  { method: 'Debit Card', pct: 18, icon: '💳', color: 'bg-saffron' },
+                  { method: 'Cash', pct: 9, icon: '💵', color: 'bg-gray-400' },
+                ].map(item => (
+                  <div key={item.method} className="flex items-center gap-3">
+                    <span className="text-xl">{item.icon}</span>
+                    <div className="flex-1">
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-gray-700 font-medium">{item.method}</span>
+                        <span className="text-gray-500">{item.pct}%</span>
+                      </div>
+                      <div className="w-full bg-gray-100 rounded-full h-2">
+                        <div className={`${item.color} h-2 rounded-full`} style={{ width: `${item.pct}%` }} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </main>
