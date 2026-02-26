@@ -33,6 +33,7 @@ contract FundDistribution {
         require(beneficiary != address(0), "Invalid beneficiary address");
         require(amount > 0, "Amount must be greater than 0");
         require(bytes(scheme).length > 0, "Scheme name cannot be empty");
+        require(bytes(scheme).length <= 128, "Scheme name too long");
         
         distributionCount++;
         distributions[distributionCount] = Distribution({

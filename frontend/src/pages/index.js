@@ -63,11 +63,11 @@ export default function Home() {
                     <div className="text-gray-400 text-xs">24 Spokes of Progress</div>
                   </div>
                 </div>
-                {Array.from({ length: 12 }).map((_, i) => (
+                {Array.from({ length: 24 }).map((_, i) => (
                   <div
                     key={i}
                     className="absolute inset-0 flex items-center justify-center"
-                    style={{ transform: `rotate(${i * 30}deg)` }}
+                    style={{ transform: `rotate(${i * 15}deg)` }}
                   >
                     <div className="w-0.5 h-28 bg-navy opacity-60" />
                   </div>
