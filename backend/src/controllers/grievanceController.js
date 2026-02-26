@@ -54,8 +54,11 @@ const PRIORITY_MAP = {
 
 const classifyGrievance = (req, res) => {
   const { description } = req.body;
-  if (!description) {
+  if (!description || typeof description !== 'string') {
     return res.status(400).json({ error: 'Description is required' });
+  }
+  if (description.length > 5000) {
+    return res.status(400).json({ error: 'Description must be 5000 characters or fewer' });
   }
   const text = description.toLowerCase();
   let bestCategory = 'General';

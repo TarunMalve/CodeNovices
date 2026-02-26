@@ -32,8 +32,8 @@ const APPROVED_CATEGORIES = {
 
 const addFunds = (req, res) => {
   const { amount } = req.body;
-  if (!amount || amount <= 0) {
-    return res.status(400).json({ error: 'Valid amount is required' });
+  if (!amount || typeof amount !== 'number' || amount <= 0 || amount > 10000000) {
+    return res.status(400).json({ error: 'Valid amount is required (max ₹1,00,00,000)' });
   }
   const db = getDb();
   const wallet = db.prepare('SELECT * FROM wallets WHERE user_id = ?').get(req.user.id);
@@ -47,7 +47,7 @@ const addFunds = (req, res) => {
 
 const makePayment = (req, res) => {
   const { amount, category, description } = req.body;
-  if (!amount || amount <= 0 || !category) {
+  if (!amount || typeof amount !== 'number' || amount <= 0 || !category || typeof category !== 'string') {
     return res.status(400).json({ error: 'Valid amount and category are required' });
   }
   if (!APPROVED_CATEGORIES[category]) {
