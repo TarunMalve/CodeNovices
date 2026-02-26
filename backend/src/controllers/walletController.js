@@ -20,4 +20,66 @@ const getTransactions = (req, res) => {
   res.json({ transactions, total: transactions.length });
 };
 
-module.exports = { getBalance, getTransactions };
+const APPROVED_CATEGORIES = {
+  electricity: 'State Power Board',
+  water: 'Municipal Corp',
+  property_tax: 'City Council',
+  professional_tax: 'Professional Tax',
+  national_tax: 'National Taxes',
+  land_tax: 'Land Revenue',
+  piped_gas: 'Gas Authority',
+};
+
+const addFunds = (req, res) => {
+  const { amount } = req.body;
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ error: 'Valid amount is required' });
+  }
+  const db = getDb();
+  const wallet = db.prepare('SELECT * FROM wallets WHERE user_id = ?').get(req.user.id);
+  if (!wallet) {
+    return res.status(404).json({ error: 'Wallet not found' });
+  }
+  const newBalance = wallet.balance + amount;
+  db.prepare('UPDATE wallets SET balance = ? WHERE user_id = ?').run(newBalance, req.user.id);
+  res.json({ balance: newBalance, message: 'Funds added successfully' });
+};
+
+const makePayment = (req, res) => {
+  const { amount, category, description } = req.body;
+  if (!amount || amount <= 0 || !category) {
+    return res.status(400).json({ error: 'Valid amount and category are required' });
+  }
+  if (!APPROVED_CATEGORIES[category]) {
+    return res.status(403).json({
+      error: 'Payment rejected. GovPay Wallet funds are restricted to government-approved payments only.',
+      approvedCategories: Object.keys(APPROVED_CATEGORIES),
+    });
+  }
+  const db = getDb();
+  const wallet = db.prepare('SELECT * FROM wallets WHERE user_id = ?').get(req.user.id);
+  if (!wallet) {
+    return res.status(404).json({ error: 'Wallet not found' });
+  }
+  if (wallet.balance < amount) {
+    return res.status(400).json({ error: 'Insufficient balance' });
+  }
+  const newBalance = wallet.balance - amount;
+  const date = new Date().toISOString().split('T')[0];
+  const txnDescription = description || `${APPROVED_CATEGORIES[category]} Payment`;
+
+  const updateAndInsert = db.transaction(() => {
+    const txnCount = db.prepare('SELECT COUNT(*) as count FROM transactions').get().count;
+    const txnId = `TXN${String(txnCount + 1).padStart(3, '0')}`;
+    db.prepare('UPDATE wallets SET balance = ? WHERE user_id = ?').run(newBalance, req.user.id);
+    db.prepare(
+      'INSERT INTO transactions (id, user_id, type, amount, description, date, status, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    ).run(txnId, req.user.id, 'debit', amount, txnDescription, date, 'completed', 'Payment');
+    return txnId;
+  });
+  const txnId = updateAndInsert();
+
+  res.json({ balance: newBalance, transactionId: txnId, message: 'Payment processed successfully' });
+};
+
+module.exports = { getBalance, getTransactions, addFunds, makePayment };

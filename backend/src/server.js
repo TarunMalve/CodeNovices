@@ -34,6 +34,8 @@ app.use('/api/land', require('./routes/land'));
 app.use('/api/fund-transparency', require('./routes/fundTransparency'));
 app.use('/api/documents', require('./routes/documents'));
 app.use('/api/tax-advisor', require('./routes/taxAdvisor'));
+app.use('/api/health-score', require('./routes/healthScore'));
+app.use('/api/ai-hub', require('./routes/aiHub'));
 
 app.get('/', (req, res) => {
   res.json({ message: 'E-Governance Portal API', version: '1.0.0' });

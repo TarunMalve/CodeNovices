@@ -35,4 +35,50 @@ const listGrievances = (req, res) => {
   res.json({ grievances: mapped, total: mapped.length });
 };
 
-module.exports = { createGrievance, listGrievances };
+const CATEGORY_KEYWORDS = {
+  Payment: ['payment', 'money', 'fund', 'wallet', 'transaction', 'transfer', 'dbt', 'subsidy', 'disbursement', 'amount', 'refund'],
+  KYC: ['kyc', 'aadhaar', 'pan', 'identity', 'verification', 'document', 'id proof', 'biometric'],
+  Technical: ['login', 'password', 'error', 'bug', 'crash', 'app', 'website', 'loading', 'otp', 'server', 'timeout'],
+  Scheme: ['scheme', 'yojana', 'eligibility', 'application', 'enrollment', 'benefit', 'scholarship', 'pension'],
+  Infrastructure: ['road', 'bridge', 'water supply', 'electricity supply', 'drainage', 'construction', 'building', 'sanitation'],
+};
+
+const PRIORITY_MAP = {
+  Payment: { priority: 'High', days: 3 },
+  KYC: { priority: 'Medium', days: 5 },
+  Technical: { priority: 'Low', days: 2 },
+  Scheme: { priority: 'High', days: 5 },
+  Infrastructure: { priority: 'Medium', days: 8 },
+  General: { priority: 'Low', days: 7 },
+};
+
+const classifyGrievance = (req, res) => {
+  const { description } = req.body;
+  if (!description) {
+    return res.status(400).json({ error: 'Description is required' });
+  }
+  const text = description.toLowerCase();
+  let bestCategory = 'General';
+  let bestScore = 0;
+
+  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+    const matches = keywords.filter(kw => text.includes(kw)).length;
+    const score = matches / keywords.length;
+    if (score > bestScore) {
+      bestScore = score;
+      bestCategory = category;
+    }
+  }
+
+  const confidence = bestScore > 0 ? Math.round(Math.min(bestScore * 100 + 40, 95)) : 30;
+  const { priority, days } = PRIORITY_MAP[bestCategory];
+
+  res.json({
+    category: bestCategory,
+    confidence,
+    suggestedPriority: priority,
+    estimatedResolutionDays: days,
+  });
+};
+
+module.exports = { createGrievance, listGrievances, classifyGrievance };
