@@ -1,0 +1,31 @@
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'egovernance-secret-key';
+
+const mockUsers = [
+  { id: 1, email: 'citizen@example.com', password: 'password123', name: 'Rahul Sharma', role: 'citizen', aadhaar: '1234-5678-9012' },
+  { id: 2, email: 'admin@example.com', password: 'admin123', name: 'Priya Singh', role: 'admin', department: 'Finance Ministry' },
+];
+
+const login = (req, res) => {
+  const { email, password } = req.body;
+  const user = mockUsers.find(u => u.email === email && u.password === password);
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+  const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+  res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+};
+
+const register = (req, res) => {
+  const { name, email, password, aadhaar } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Name, email, and password are required' });
+  }
+  const newUser = { id: mockUsers.length + 1, email, password, name, role: 'citizen', aadhaar };
+  mockUsers.push(newUser);
+  const token = jwt.sign({ id: newUser.id, email, role: 'citizen' }, JWT_SECRET, { expiresIn: '24h' });
+  res.status(201).json({ token, user: { id: newUser.id, name, email, role: 'citizen' } });
+};
+
+module.exports = { login, register };
