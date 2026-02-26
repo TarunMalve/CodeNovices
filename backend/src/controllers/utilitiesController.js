@@ -1,29 +1,41 @@
+const { getDb } = require('../database/db');
+
 const getBills = (req, res) => {
-  res.json({
-    bills: [
-      { id: 'ELEC001', type: 'Electricity', provider: 'BESCOM', consumerNo: 'BES7823456', amount: 2340, dueDate: '2024-02-15', status: 'Unpaid', units: 210 },
-      { id: 'WAT001', type: 'Water', provider: 'BWSSB', consumerNo: 'BWS9012345', amount: 456, dueDate: '2024-02-20', status: 'Unpaid', units: 18 },
-      { id: 'PROP001', type: 'Property Tax', provider: 'BBMP', consumerNo: 'BBP1234567', amount: 8900, dueDate: '2024-03-31', status: 'Unpaid', units: null },
-    ]
-  });
+  const db = getDb();
+  const userId = req.user ? req.user.id : null;
+  const bills = userId
+    ? db.prepare('SELECT * FROM bills WHERE user_id = ? ORDER BY due_date').all(userId)
+    : db.prepare('SELECT * FROM bills ORDER BY due_date').all();
+  const mapped = bills.map(b => ({
+    id: b.id,
+    type: b.type,
+    provider: b.provider,
+    consumerNo: b.consumer_no,
+    amount: b.amount,
+    dueDate: b.due_date,
+    status: b.status,
+    units: b.units,
+  }));
+  res.json({ bills: mapped });
 };
 
 const payBill = (req, res) => {
   const { billId, amount } = req.body;
+  const db = getDb();
+  db.prepare('UPDATE bills SET status = ? WHERE id = ?').run('Paid', billId);
   res.json({ success: true, transactionId: `TXN${Date.now()}`, billId, amount, message: 'Payment successful', timestamp: new Date().toISOString() });
 };
 
 const getUsage = (req, res) => {
-  res.json({
-    electricity: [
-      { month: 'Aug', units: 185 }, { month: 'Sep', units: 210 }, { month: 'Oct', units: 195 },
-      { month: 'Nov', units: 220 }, { month: 'Dec', units: 265 }, { month: 'Jan', units: 210 },
-    ],
-    water: [
-      { month: 'Aug', kl: 15 }, { month: 'Sep', kl: 18 }, { month: 'Oct', kl: 16 },
-      { month: 'Nov', kl: 17 }, { month: 'Dec', kl: 19 }, { month: 'Jan', kl: 18 },
-    ],
-  });
+  const db = getDb();
+  const userId = req.user ? req.user.id : null;
+  const elecRows = userId
+    ? db.prepare("SELECT month, value as units FROM usage_data WHERE type = 'electricity' AND user_id = ? ORDER BY id").all(userId)
+    : db.prepare("SELECT month, value as units FROM usage_data WHERE type = 'electricity' ORDER BY id").all();
+  const waterRows = userId
+    ? db.prepare("SELECT month, value as kl FROM usage_data WHERE type = 'water' AND user_id = ? ORDER BY id").all(userId)
+    : db.prepare("SELECT month, value as kl FROM usage_data WHERE type = 'water' ORDER BY id").all();
+  res.json({ electricity: elecRows, water: waterRows });
 };
 
 module.exports = { getBills, payBill, getUsage };

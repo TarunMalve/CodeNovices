@@ -1,8 +1,17 @@
+const { getDb } = require('../database/db');
+
 const uploadDocument = (req, res) => {
   const { documentType, fileName } = req.body;
+  const db = getDb();
+  const docId = `DOC${Date.now()}`;
+  const uploadedAt = new Date().toISOString();
+  const userId = req.user ? req.user.id : null;
+  db.prepare(
+    'INSERT INTO documents (id, user_id, type, file_name, uploaded_at, verified, category) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  ).run(docId, userId, documentType || 'General', fileName || 'document.pdf', uploadedAt, 0, 'General');
   res.json({
     success: true,
-    documentId: `DOC${Date.now()}`,
+    documentId: docId,
     documentType: documentType || 'General',
     fileName: fileName || 'document.pdf',
     ocrExtracted: {
@@ -11,23 +20,25 @@ const uploadDocument = (req, res) => {
       documentNumber: `${documentType === 'Aadhaar' ? '9876 5432 1098' : 'ABCDE1234F'}`,
       address: 'Flat 302, Sector 15, Noida, Uttar Pradesh - 201301',
     },
-    uploadedAt: new Date().toISOString(),
+    uploadedAt,
   });
 };
 
 const listDocuments = (req, res) => {
-  res.json({
-    documents: [
-      { id: 'DOC001', type: 'Aadhaar Card', fileName: 'aadhaar.pdf', uploadedAt: '2024-01-10', verified: true, category: 'Identity' },
-      { id: 'DOC002', type: 'PAN Card', fileName: 'pan_card.pdf', uploadedAt: '2024-01-11', verified: true, category: 'Identity' },
-      { id: 'DOC003', type: 'Income Certificate', fileName: 'income_cert.pdf', uploadedAt: '2024-01-12', verified: false, category: 'Income' },
-      { id: 'DOC004', type: 'Caste Certificate', fileName: 'caste_cert.pdf', uploadedAt: '2024-01-13', verified: true, category: 'Identity' },
-      { id: 'DOC005', type: 'Land Records', fileName: 'land_record.pdf', uploadedAt: '2024-01-14', verified: false, category: 'Property' },
-      { id: 'DOC006', type: 'Birth Certificate', fileName: 'birth_cert.pdf', uploadedAt: '2024-01-15', verified: true, category: 'Identity' },
-      { id: 'DOC007', type: 'Degree Certificate', fileName: 'degree.pdf', uploadedAt: '2024-01-16', verified: false, category: 'Education' },
-      { id: 'DOC008', type: 'Ration Card', fileName: 'ration_card.pdf', uploadedAt: '2024-01-17', verified: true, category: 'Welfare' },
-    ]
-  });
+  const db = getDb();
+  const userId = req.user ? req.user.id : null;
+  const documents = userId
+    ? db.prepare('SELECT * FROM documents WHERE user_id = ? ORDER BY uploaded_at DESC').all(userId)
+    : db.prepare('SELECT * FROM documents ORDER BY uploaded_at DESC').all();
+  const mapped = documents.map(d => ({
+    id: d.id,
+    type: d.type,
+    fileName: d.file_name,
+    uploadedAt: d.uploaded_at,
+    verified: !!d.verified,
+    category: d.category,
+  }));
+  res.json({ documents: mapped });
 };
 
 module.exports = { uploadDocument, listDocuments };

@@ -19,6 +19,12 @@ blockchain/cache/
 dist/
 build/
 
+# Database files
+*.db
+*.db-wal
+*.db-shm
+backend/data/
+
 # Logs
 *.log
 npm-debug.log*
