@@ -58,4 +58,36 @@ export const adminAPI = {
   getBlockchain: () => api.get('/admin/blockchain'),
 };
 
+export const eligibilityAPI = {
+  check: (params) => api.get('/eligibility/check', { params }),
+};
+
+export const utilitiesAPI = {
+  getBills: () => api.get('/utilities/bills'),
+  pay: (data) => api.post('/utilities/pay', data),
+  getUsage: () => api.get('/utilities/usage'),
+};
+
+export const securityAPI = {
+  getSessions: () => api.get('/security/sessions'),
+  toggleMFA: (data) => api.post('/security/mfa/toggle', data),
+};
+
+export const landAPI = {
+  verify: (params) => api.get('/land/verify', { params }),
+};
+
+export const fundTransparencyAPI = {
+  get: () => api.get('/fund-transparency'),
+};
+
+export const documentsAPI = {
+  upload: (data) => api.post('/documents/upload', data),
+  list: () => api.get('/documents/list'),
+};
+
+export const taxAdvisorAPI = {
+  recommend: (params) => api.get('/tax-advisor/recommend', { params }),
+};
+
 export default api;

@@ -27,7 +27,8 @@ export default function Header() {
 
           <nav className="hidden md:flex items-center space-x-6">
             <Link href="/" className="text-white hover:text-saffron transition-colors text-sm">Home</Link>
-            <Link href="/aatmanirbhar/schemes" className="text-white hover:text-saffron transition-colors text-sm">Schemes</Link>
+            <Link href="/fund-transparency" className="text-white hover:text-saffron transition-colors text-sm">Fund Transparency</Link>
+            <Link href="/eligibility" className="text-white hover:text-saffron transition-colors text-sm">Schemes</Link>
             <Link href="/aatmanirbhar/marketplace" className="text-white hover:text-saffron transition-colors text-sm">Marketplace</Link>
             <Link href="/grievance" className="text-white hover:text-saffron transition-colors text-sm">Grievance</Link>
             {user ? (
