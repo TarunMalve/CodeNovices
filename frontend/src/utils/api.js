@@ -59,6 +59,13 @@ export const marketplaceAPI = {
 export const adminAPI = {
   getAnalytics: () => api.get('/admin/analytics'),
   getBlockchain: () => api.get('/admin/blockchain'),
+  getHeatmap: () => api.get('/admin/heatmap'),
+  getGrievanceClassify: () => api.get('/admin/grievance/classify'),
+  getRevenueTrends: () => api.get('/admin/revenue-trends'),
+};
+
+export const publicAPI = {
+  getStats: () => api.get('/public/stats'),
 };
 
 export const eligibilityAPI = {

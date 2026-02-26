@@ -11,6 +11,9 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [analytics, setAnalytics] = useState(null);
   const [blockchain, setBlockchain] = useState([]);
+  const [heatmapData, setHeatmapData] = useState([]);
+  const [grievanceData, setGrievanceData] = useState({ categories: [], recent: [] });
+  const [revenueTrends, setRevenueTrends] = useState(null);
   const [grievanceFilter, setGrievanceFilter] = useState('All');
 
   useEffect(() => {
@@ -22,19 +25,16 @@ export default function AdminDashboard() {
     if (user?.role === 'admin') {
       adminAPI.getAnalytics().then(d => setAnalytics(d)).catch(() => {});
       adminAPI.getBlockchain().then(d => setBlockchain(d.transactions || [])).catch(() => {});
+      adminAPI.getHeatmap().then(d => setHeatmapData(d.states || [])).catch(() => {});
+      adminAPI.getGrievanceClassify().then(d => setGrievanceData(d)).catch(() => {});
+      adminAPI.getRevenueTrends().then(d => setRevenueTrends(d)).catch(() => {});
     }
   }, [user]);
 
   if (loading || !user) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin text-4xl">⚙️</div></div>;
 
-  const mockGrievances = [
-    { id: 'GRV001', title: 'Delayed DBT Payment', citizen: 'Ramesh Kumar', category: 'Finance', status: 'Resolved', date: '2024-01-05' },
-    { id: 'GRV002', title: 'Document Verification Issue', citizen: 'Sunita Devi', category: 'Documents', status: 'In Progress', date: '2024-01-12' },
-    { id: 'GRV003', title: 'Scheme Application Rejected', citizen: 'Mohan Lal', category: 'Schemes', status: 'Open', date: '2024-01-20' },
-    { id: 'GRV004', title: 'Ration Card Update', citizen: 'Anita Singh', category: 'Documents', status: 'Open', date: '2024-01-22' },
-  ];
-
-  const filteredGrievances = grievanceFilter === 'All' ? mockGrievances : mockGrievances.filter(g => g.status === grievanceFilter);
+  const recentGrievances = grievanceData.recent || [];
+  const filteredGrievances = grievanceFilter === 'All' ? recentGrievances : recentGrievances.filter(g => g.status === grievanceFilter);
 
   const statusColors = {
     'Resolved': 'bg-green-100 text-india-green',
@@ -195,22 +195,15 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {[
-                      { state: 'Maharashtra', fund: 8500, pct: 85 },
-                      { state: 'Uttar Pradesh', fund: 7200, pct: 72 },
-                      { state: 'Tamil Nadu', fund: 6100, pct: 61 },
-                      { state: 'Karnataka', fund: 5800, pct: 58 },
-                      { state: 'Gujarat', fund: 5400, pct: 54 },
-                      { state: 'Rajasthan', fund: 4200, pct: 42 },
-                    ].map(row => (
+                    {heatmapData.map(row => (
                       <tr key={row.state} className="border-t border-gray-100">
                         <td className="py-2 px-3 text-gray-700 font-medium">{row.state}</td>
-                        <td className="py-2 px-3 text-gray-600">₹{row.fund.toLocaleString('en-IN')}</td>
+                        <td className="py-2 px-3 text-gray-600">₹{Number(row.funds).toLocaleString('en-IN')}</td>
                         <td className="py-2 px-3">
                           <div className="w-full bg-gray-100 rounded-full h-2">
                             <div
-                              className={`h-2 rounded-full ${row.pct >= 70 ? 'bg-india-green' : row.pct >= 50 ? 'bg-saffron' : 'bg-red-400'}`}
-                              style={{ width: `${row.pct}%` }}
+                              className={`h-2 rounded-full ${row.intensity >= 70 ? 'bg-india-green' : row.intensity >= 50 ? 'bg-saffron' : 'bg-red-400'}`}
+                              style={{ width: `${row.intensity}%` }}
                             />
                           </div>
                         </td>
@@ -251,27 +244,45 @@ export default function AdminDashboard() {
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-lg font-bold text-navy mb-4">📊 Scheme Distribution</h2>
               <div className="space-y-3">
-                {[
-                  { scheme: 'PM-KISAN', pct: 35, color: 'bg-india-green' },
-                  { scheme: 'Ayushman Bharat', pct: 25, color: 'bg-navy' },
-                  { scheme: 'PM Mudra Yojana', pct: 20, color: 'bg-saffron' },
-                  { scheme: 'Startup India', pct: 12, color: 'bg-blue-400' },
-                  { scheme: 'Others', pct: 8, color: 'bg-gray-400' },
-                ].map(item => (
-                  <div key={item.scheme}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-700">{item.scheme}</span>
-                      <span className="text-gray-500 font-medium">{item.pct}%</span>
+                {(revenueTrends?.schemeDistribution || [
+                  { scheme: 'PM-KISAN', percentage: 35 },
+                  { scheme: 'Ayushman Bharat', percentage: 25 },
+                  { scheme: 'PM Mudra Yojana', percentage: 20 },
+                  { scheme: 'Startup India', percentage: 12 },
+                  { scheme: 'Others', percentage: 8 },
+                ]).map((item, idx) => {
+                  const colors = ['bg-india-green', 'bg-navy', 'bg-saffron', 'bg-blue-400', 'bg-gray-400'];
+                  return (
+                    <div key={item.scheme}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-gray-700">{item.scheme}</span>
+                        <span className="text-gray-500 font-medium">{item.percentage}%</span>
+                      </div>
+                      <div className="w-full bg-gray-100 rounded-full h-2">
+                        <div className={`${colors[idx % colors.length]} h-2 rounded-full`} style={{ width: `${item.percentage}%` }} />
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2">
-                      <div className={`${item.color} h-2 rounded-full`} style={{ width: `${item.pct}%` }} />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
               {/* Mini pie visual */}
               <div className="flex items-center justify-center mt-4">
-                <div className="w-24 h-24 rounded-full" style={{ background: 'conic-gradient(#138808 0% 35%, #000080 35% 60%, #FF9933 60% 80%, #60a5fa 80% 92%, #9ca3af 92% 100%)' }} />
+                <div className="w-24 h-24 rounded-full" style={{
+                  background: (() => {
+                    const dist = revenueTrends?.schemeDistribution;
+                    if (dist && dist.length > 0) {
+                      const colorMap = ['#138808', '#000080', '#FF9933', '#60a5fa', '#9ca3af'];
+                      let acc = 0;
+                      const stops = dist.map((d, i) => {
+                        const start = acc;
+                        acc += d.percentage;
+                        return `${colorMap[i % colorMap.length]} ${start}% ${acc}%`;
+                      });
+                      return `conic-gradient(${stops.join(', ')})`;
+                    }
+                    return 'conic-gradient(#138808 0% 35%, #000080 35% 60%, #FF9933 60% 80%, #60a5fa 80% 92%, #9ca3af 92% 100%)';
+                  })()
+                }} />
               </div>
             </div>
 

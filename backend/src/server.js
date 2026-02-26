@@ -37,6 +37,21 @@ app.use('/api/tax-advisor', require('./routes/taxAdvisor'));
 app.use('/api/health-score', require('./routes/healthScore'));
 app.use('/api/ai-hub', require('./routes/aiHub'));
 
+// Public stats endpoint (no auth required) for landing page
+app.get('/api/public/stats', (req, res) => {
+  const { getDb } = require('./database/db');
+  const db = getDb();
+  const rows = db.prepare('SELECT key, value FROM analytics_overview').all();
+  const data = {};
+  rows.forEach(r => { data[r.key] = r.value; });
+  res.json({
+    citizensServed: data.totalCitizens || 0,
+    fundsDistributed: data.fundsDistributed || 0,
+    grievancesResolved: data.grievancesResolved || 0,
+    schemesActive: data.schemesActive || 0,
+  });
+});
+
 app.get('/', (req, res) => {
   res.json({ message: 'E-Governance Portal API', version: '1.0.0' });
 });

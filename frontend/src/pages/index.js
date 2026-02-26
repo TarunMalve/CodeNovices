@@ -1,16 +1,35 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
-
-const stats = [
-  { value: '12.8L+', label: 'Citizens Served', icon: '👥' },
-  { value: '₹842Cr+', label: 'Funds Distributed', icon: '💰' },
-  { value: '45,230', label: 'Grievances Resolved', icon: '✅' },
-  { value: '47', label: 'Active Schemes', icon: '📋' },
-];
+import { publicAPI } from '../utils/api';
 
 export default function Home() {
+  const [stats, setStats] = useState([
+    { value: '...', label: 'Citizens Served', icon: '👥' },
+    { value: '...', label: 'Funds Distributed', icon: '💰' },
+    { value: '...', label: 'Grievances Resolved', icon: '✅' },
+    { value: '...', label: 'Active Schemes', icon: '📋' },
+  ]);
+
+  useEffect(() => {
+    publicAPI.getStats().then(data => {
+      setStats([
+        { value: `${(data.citizensServed / 100000).toFixed(1)}L+`, label: 'Citizens Served', icon: '👥' },
+        { value: `₹${(data.fundsDistributed / 10000000).toFixed(0)}Cr+`, label: 'Funds Distributed', icon: '💰' },
+        { value: data.grievancesResolved.toLocaleString('en-IN'), label: 'Grievances Resolved', icon: '✅' },
+        { value: String(data.schemesActive), label: 'Active Schemes', icon: '📋' },
+      ]);
+    }).catch(() => {
+      setStats([
+        { value: '12.8L+', label: 'Citizens Served', icon: '👥' },
+        { value: '₹842Cr+', label: 'Funds Distributed', icon: '💰' },
+        { value: '45,230', label: 'Grievances Resolved', icon: '✅' },
+        { value: '47', label: 'Active Schemes', icon: '📋' },
+      ]);
+    });
+  }, []);
   return (
     <>
       <Head>
