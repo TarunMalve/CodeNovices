@@ -4,6 +4,13 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const { initializeDatabase } = require('./database/db');
+const { seedDatabase } = require('./database/seed');
+
+// Initialize database and seed data
+initializeDatabase();
+seedDatabase();
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 

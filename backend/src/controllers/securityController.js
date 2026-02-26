@@ -1,11 +1,16 @@
+const { getDb } = require('../database/db');
+
 const getSessions = (req, res) => {
-  res.json({
-    sessions: [
-      { id: 'S001', device: 'Chrome on Windows 11', location: 'Mumbai, Maharashtra', lastActive: '2024-01-25 14:32:00', current: true },
-      { id: 'S002', device: 'Safari on iPhone 15', location: 'Delhi, India', lastActive: '2024-01-24 09:15:00', current: false },
-      { id: 'S003', device: 'Firefox on Ubuntu', location: 'Bengaluru, Karnataka', lastActive: '2024-01-20 18:45:00', current: false },
-    ]
-  });
+  const db = getDb();
+  const sessions = db.prepare('SELECT * FROM sessions ORDER BY last_active DESC').all();
+  const mapped = sessions.map(s => ({
+    id: s.id,
+    device: s.device,
+    location: s.location,
+    lastActive: s.last_active,
+    current: !!s.current_session,
+  }));
+  res.json({ sessions: mapped });
 };
 
 const toggleMFA = (req, res) => {
