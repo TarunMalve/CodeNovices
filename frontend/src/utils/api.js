@@ -38,6 +38,8 @@ export const authAPI = {
 export const walletAPI = {
   getBalance: () => api.get('/wallet/balance'),
   getTransactions: () => api.get('/wallet/transactions'),
+  addFunds: (data) => api.post('/wallet/add-funds', data),
+  makePayment: (data) => api.post('/wallet/pay', data),
 };
 
 export const dbtAPI = {
@@ -47,6 +49,7 @@ export const dbtAPI = {
 export const grievanceAPI = {
   create: (data) => api.post('/grievance/create', data),
   list: (status) => api.get('/grievance/list', { params: { status } }),
+  classify: (data) => api.post('/grievance/classify', data),
 };
 
 export const marketplaceAPI = {
@@ -56,6 +59,13 @@ export const marketplaceAPI = {
 export const adminAPI = {
   getAnalytics: () => api.get('/admin/analytics'),
   getBlockchain: () => api.get('/admin/blockchain'),
+  getHeatmap: () => api.get('/admin/heatmap'),
+  getGrievanceClassify: () => api.get('/admin/grievance/classify'),
+  getRevenueTrends: () => api.get('/admin/revenue-trends'),
+};
+
+export const publicAPI = {
+  getStats: () => api.get('/public/stats'),
 };
 
 export const eligibilityAPI = {
@@ -88,6 +98,14 @@ export const documentsAPI = {
 
 export const taxAdvisorAPI = {
   recommend: (params) => api.get('/tax-advisor/recommend', { params }),
+};
+
+export const healthScoreAPI = {
+  getScore: () => api.get('/health-score'),
+};
+
+export const aiHubAPI = {
+  getRecommendations: () => api.get('/ai-hub/recommendations'),
 };
 
 export default api;

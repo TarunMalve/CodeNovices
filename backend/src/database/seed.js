@@ -109,6 +109,9 @@ function seedDatabase() {
     insertBill.run('ELEC001', 1, 'Electricity', 'BESCOM', 'BES7823456', 2340, '2024-02-15', 'Unpaid', 210);
     insertBill.run('WAT001', 1, 'Water', 'BWSSB', 'BWS9012345', 456, '2024-02-20', 'Unpaid', 18);
     insertBill.run('PROP001', 1, 'Property Tax', 'BBMP', 'BBP1234567', 8900, '2024-03-31', 'Unpaid', null);
+    insertBill.run('LAND001', 1, 'Land Tax', 'Land Revenue Dept', 'LND4567890', 3200, '2024-03-15', 'Unpaid', null);
+    insertBill.run('GAS001', 1, 'Piped Gas', 'Gas Authority of India', 'GAS7891234', 980, '2024-02-25', 'Unpaid', 45);
+    insertBill.run('PTAX001', 1, 'Professional Tax', 'State Tax Board', 'PTX3456789', 2400, '2024-03-31', 'Unpaid', null);
 
     // ─── Usage Data ───
     const insertUsage = db.prepare(

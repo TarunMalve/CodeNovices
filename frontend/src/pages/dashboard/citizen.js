@@ -106,12 +106,14 @@ export default function CitizenDashboard() {
           </div>
 
           {/* Quick Links */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {[
               { href: '/aatmanirbhar/schemes', icon: '📋', label: 'Apply for Schemes' },
               { href: '/aatmanirbhar/marketplace', icon: '🛒', label: 'Marketplace' },
               { href: '/grievance', icon: '📢', label: 'File Grievance' },
               { href: '/documents', icon: '📁', label: 'My Documents' },
+              { href: '/ai-hub', icon: '🤖', label: 'AI Hub' },
+              { href: '/bills-services', icon: '📋', label: 'Bills & Services' },
             ].map(link => (
               <Link key={link.href} href={link.href} className="bg-white rounded-xl shadow-md p-5 text-center hover:shadow-lg transition-shadow group border border-gray-100">
                 <div className="text-3xl mb-2">{link.icon}</div>
